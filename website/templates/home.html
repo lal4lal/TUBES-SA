@@ -1,0 +1,47 @@
+{% extends "base.html" %} 
+{% block title %}Home{% endblock %} 
+{% block content %}
+    <h1 align="center">Taxi Bookings</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="algorithm">Select Algorithm</label>
+            <select class="form-control" id="algorithm" name="algorithm">
+                <option value="backtracking">Backtracking</option>
+                <option value="greedy">Greedy</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="csvFile">Upload Booking CSV</label>
+            <input type="file" class="form-control-file" id="csvFile" name="csv_file" accept=".csv" required>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {% if bookings %}
+    <h2>Scheduled Bookings</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Driver</th>
+                <th>Pickup Time</th>
+                <th>Drop-off Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ Driver.query.get(booking.driver_id).first_name }}</td>
+                    <td>{{ booking.pickup_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ booking.drop_off_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form method="POST" action="/delete-bookings">
+        <input type="hidden" name="confirm" value="true">
+        <button type="submit" class="btn btn-danger">Done</button>
+    </form>
+    {% endif %}
+{% endblock %}
